@@ -1,23 +1,24 @@
-﻿package pscp;
+﻿package load;
+
 
 import com.chilkatsoft.CkGlobal;
 import com.chilkatsoft.CkScp;
 import com.chilkatsoft.CkSsh;
 
-public class LoadFile {
+public class ChilkatExample {
 	static {
 		try {
-			System.loadLibrary("chilkat"); 
+			System.loadLibrary("chilkat"); //copy file chilkat.dll vao thu muc project
 		} catch (UnsatisfiedLinkError e) {
 			System.err.println("Native code library failed to load.\n" + e);
 			System.exit(1);
 		}
 	}
 
-	public static void main(String argv[])  {
+	public static void main(String argv[]) {
 		CkSsh ssh = new CkSsh();
 		CkGlobal ck = new CkGlobal();
-		ck.UnlockBundle("hello ");
+		ck.UnlockBundle("Hello VoThanhTri");
 		String hostname = "drive.ecepvn.org";
 		int port = 2227;
 		boolean success = ssh.Connect(hostname, port);
@@ -39,19 +40,15 @@ public class LoadFile {
 			System.out.println(scp.lastErrorText());
 			return;
 		}
-		// down tat ca cac file bat dau bang "sinhvien"
-		scp.put_SyncMustMatch("sinhvien*.*");
-		//souce
+		 scp.put_SyncMustMatch("sinhvien*.*");//down tat ca cac file bat dau bang sinhvien
 		String remotePath = "/volume1/ECEP/song.nguyen/DW_2020/data";
-		// thu muc muon down file ve
-		String localPath = "D:\\DATA_WH\\text"; 
+		String localPath = "C:\\Users\\Tuong Tu\\Desktop\\copy"; //thu muc muon down file ve
 		success = scp.SyncTreeDownload(remotePath, localPath, 2, false);
 		if (success != true) {
 			System.out.println(scp.lastErrorText());
 			return;
 		}
-
+System.out.println("okkkkkkkkkkkkk");
 		ssh.Disconnect();
 	}
-	
 }

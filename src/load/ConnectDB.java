@@ -1,3 +1,4 @@
+package load;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -14,7 +15,7 @@ public class ConnectDB {
 	
 	//	String connectionURL = "jdbc:mysql://localhost:3306/datacontrol?rewriteBatchedStatements=true&relaxAutoCommit=true";
 		connection = DriverManager.getConnection(jdbcURL, username, password);
-		System.out.println("okkkkkkkkkk");
+		System.out.println("Connect success");
 	}
 	public static void main(String[] args) throws SQLException {
 		String jdbcURL = "jdbc:mysql://localhost:3306";
