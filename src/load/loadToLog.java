@@ -1,4 +1,4 @@
-package data_warehouse;
+package load;
 
 import java.io.File;
 import java.sql.Connection;
@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import data_warehouse.ConnectDB;
+import load.ConnectDB;
 
 public class loadToLog {
 	 

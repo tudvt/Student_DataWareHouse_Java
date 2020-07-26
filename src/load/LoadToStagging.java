@@ -1,4 +1,4 @@
-
+package load;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -7,12 +7,12 @@ public class LoadToStagging {
 		ConnectDB connect = new ConnectDB();
 		connect.connectDatabase(jdbcURL, username, password);
 		Statement stmt = connect.connection.createStatement();
-		String sql="select filenamesrc, IDlog from log where statusend='ER'";
+		String sql="select idLog,name from log where status='ER'";
 		stmt.execute(sql);
 		
-		String sql1="use datacontrol";
+		String sql1="use wh";
 		stmt.executeUpdate(sql1);
-		String sqlER="update log set statusend='TR' where IDlog=''";
+		String sqlER="update log set status='TR' where idLog=''";
 		stmt.executeUpdate(sqlER);		
 		
 	}
