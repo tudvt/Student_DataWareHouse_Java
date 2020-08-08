@@ -1,3 +1,4 @@
+package src;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -15,31 +16,26 @@ import com.chilkatsoft.CkSsh;
 
 public class load {
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
-	static final String DB_URL = "jdbc:mysql://localhost:3306/datacontrol";
-
+	static final String DB_URL = "jdbc:mysql://localhost/datacontrol";
 	// Ten nguoi dung va mat khau cua co so du lieu
 	static final String USER = "root";
-	static final String PASS = "123456";
+	static final String PASS = ""; 
 	static Connection conn = null;
 	static CallableStatement stmt = null;
 	static ArrayList<String> listER = new ArrayList<String>();
 	static Map<String, String> map = new HashMap<>();
-	static SendEmail sendMail; 
-	private static String USER_NAME = "dotuongtu197@gmail.com"; // GMail user
-																// name (just
-																// the part
-																// before
-																// "@gmail.com")
+	static SendEmail sendMail;
+	private static String USER_NAME = "dotuongtu197@gmail.com"; //ng gui
 	private static String PASSWORD = "kid159753"; // GMail password
-	private static String RECIPIENT = "dotuongtu198@gmail.com";
+	private static String RECIPIENT = "dotuongtu198@gmail.com";//ng nhan
 	static String subject = "Thong bao ";
-	static String body = " thanh cong";
+	static String body = "load to stagging thanh cong";
 	static String[] listEmail = { RECIPIENT };
 	static String table_target = "";
 	static String db_target = "";
 	static String temp_target = "";
 	static String db_config = "";
-	static String table_end = "";
+
 	static void connectDb() throws ClassNotFoundException, SQLException {
 
 		// Buoc 2: Dang ky Driver
@@ -59,11 +55,10 @@ public class load {
 		ResultSet rs = stmt.executeQuery();
 		while (rs.next()) {
 			db_target = rs.getString(12);
-			System.out.println(db_target);
-			table_target = rs.getString(13);//table stagiing
-			temp_target = rs.getString(14);//table temp
+			System.err.println(db_target);
+			table_target = rs.getString(13);
+			temp_target = rs.getString(14);
 			db_config = rs.getString(15);
-			table_end=rs.getString(16);// table sau khi da edit temp
 		}
 	}
 
@@ -132,20 +127,18 @@ public class load {
 	}
 
 	static void loadToStagging() throws SQLException {
-		//su dung db sinh vien
 		String useDB = "use " + db_target;
 		System.out.println(useDB);
 
 		System.out.println(table_target);
 		stmt.executeUpdate(useDB);
-		System.out.println("Bat dau load");
-		//duyet cai map lay ra các file ER o phan tren
+		System.err.println("Bat dau load");
 		for (Map.Entry<String, String> entry : map.entrySet()) {
 			String target = "sinhvien.stagging";
 			String k = entry.getKey();
 			String v = entry.getValue();
 			System.out.println("Key: " + k + ", Value: " + v);
-//load file vao db
+
 			// dung load file ko the bo vao procedure
 			String load_stagging = "LOAD DATA  INFILE '" + v + "' " + "INTO TABLE " + target + ""
 					+ " FIELDS TERMINATED BY '\t' " + "ENCLOSED BY '' " + "LINES TERMINATED BY '\r\n';";
@@ -154,32 +147,29 @@ public class load {
 			stmt.executeUpdate(load_stagging);
 			System.out.println("load ok");
 			String sql_filename = "";
-
+// cai do la cai gi v z. duong dan em khac ma
 		}
-		sendMail = new SendEmail();
+sendMail = new SendEmail();
 		 sendMail.sendFromGMail(USER_NAME, PASSWORD, listEmail, subject,
 		 body);
-		System.out.println("gui email ok");
+		System.err.println("gui email ok");
 	}
 
 	private static void loadToTemp() throws SQLException {
 		String use_dc = "use " + db_target;
 		stmt.executeUpdate(use_dc);
-		//goi ham insert gai tri tu stagging vao temp
 		String call_insert = " insert into " + temp_target + " select * from " + table_target + "";
 		stmt = conn.prepareCall(call_insert);
 		stmt.executeUpdate();
-		System.out.println("load from stagging to temp");
+		System.err.println("load from stagging to temp");
 
 		System.out.println("dung db sinh vien");
 		String call_truncate = " TRUNCATE TABLE " + table_target + ";";
 		stmt = conn.prepareCall(call_truncate);
 		System.out.println("xoa du lieu trong stagging");
 		stmt.executeUpdate();
-		
-		sendMail = new SendEmail();
-		 sendMail.sendFromGMail(USER_NAME, PASSWORD, listEmail, subject,
-		 body);
+		System.err.println("load from stagging to temp");
+
 	}
 
 	private static void editTemp() throws SQLException {
@@ -202,7 +192,7 @@ public class load {
 		stmt = conn.prepareCall(addDate_temp);
 		stmt.executeUpdate();
 		System.out.println("them cot date_temp");
-		// day la date sk lấy từ date dim
+		// day la date sk láº¥y tá»« date dim
 		String addDate_sk = "alter table " + temp_target + " add date_sk int;";
 		stmt = conn.prepareCall(addDate_sk);
 		stmt.executeUpdate();
@@ -212,7 +202,7 @@ public class load {
 		stmt = conn.prepareCall(addDate_lastchange);
 		stmt.executeUpdate();
 		System.out.println("them cot date_lastchange");
-		// set gia tri cot là ngay hien tai
+		// set gia tri cot lÃ  ngay hien tai
 		String add_curdate = "UPDATE " + temp_target + " SET date_temp = curdate(); ";
 		stmt = conn.prepareCall(add_curdate);
 		stmt.executeUpdate();
@@ -223,29 +213,19 @@ public class load {
 		stmt = conn.prepareCall(update_date_sk);
 		stmt.executeUpdate();
 		System.out.println("update date sk cho table");
-		
-		String table_end_sql="  CREATE TABLE " + table_end + "  AS SELECT * FROM " + temp_target + ";   ";
-		stmt = conn.prepareCall(table_end_sql);
-		stmt.executeUpdate();
-		System.out.println("ra table cuoi cung");
-		
-		sendMail = new SendEmail();
-		 sendMail.sendFromGMail(USER_NAME, PASSWORD, listEmail, subject,
-		 body);
-		 System.out.println("gui mail ok ");
+
 	}
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException {
-		connectDb();    
-		 int id_config = Integer.parseInt(args[0]);
 
-		
-		getConfigData(id_config);
-		getFileER(id_config);
+		// int id_config = Integer.parseInt(args[0]);
+
+		connectDb();
+		getConfigData(1);
+		getFileER(1);
 		loadToStagging();
-		loadToTemp();
-		editTemp();
-		System.out.println("okkkkkk");
+		//loadToTemp();
+		//editTemp();
 
 	}
 }
