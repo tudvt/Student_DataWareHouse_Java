@@ -132,7 +132,6 @@ public class load {
 		String useDB = "use " + db_target;
 		System.out.println(useDB);
 
-		System.out.println(table_target);
 		stmt.executeUpdate(useDB);
 		System.err.println("Bat dau load");
 		for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -154,7 +153,6 @@ public class load {
 		// set ER -->>> TR
 				String useDB1 = "use " + db_config;
 				System.out.println(useDB1);
-				System.out.println(table_target1);
 				stmt.executeUpdate(useDB1);
 				
 				for (Map.Entry<String, String> entry : map.entrySet()) {
@@ -168,7 +166,7 @@ public class load {
 					System.out.println("Set ER thanh TR ok");				
 	} 
 		
-		
+		map.clear();
 		sendMail = new SendEmail();
 		sendMail.sendFromGMail(USER_NAME, PASSWORD, listEmail, subject, body);
 		System.err.println("gui email ok");
