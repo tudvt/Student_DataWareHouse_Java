@@ -148,8 +148,6 @@ public class load {
 			System.out.println("Dang load dong:  " + v);
 			stmt.executeUpdate(load_stagging);
 			System.out.println("load ok");
-			String sql_filename = "";
-		}
 		}
 		
 	static void setStatusTR() throws SQLException{
@@ -160,16 +158,14 @@ public class load {
 				stmt.executeUpdate(useDB1);
 				
 				for (Map.Entry<String, String> entry : map.entrySet()) {
-					String target1 = "datacontrol.log";
 					String k1 = entry.getKey();
 					String v1 = entry.getValue();
 					System.out.println("Key: " + k1 + ", Value: " + v1);
 
 					// set ER sang TR
-					String set_statusTR = "UPDATE log SET statusend =\"TR\" WHERE statusend =\"ER\" ";
+					String set_statusTR = "UPDATE log SET statusend =\"TR\" WHERE filenamesrc=\""+ v1 +"\"";
 					stmt.executeUpdate(set_statusTR);
 					System.out.println("Set ER thanh TR ok");				
-					String sql_filename = "";
 	} 
 		
 		
