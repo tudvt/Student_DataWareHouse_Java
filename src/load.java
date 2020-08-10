@@ -71,56 +71,7 @@ static PreparedStatement pr=null;
 
 	}
 
-	public static boolean log() {
-		int rs = 0;
-		// tao bien tamp de kiem tra ghi vao db thanh cong hay khong
-		boolean tamp = false;
-		PreparedStatement pr = null;
-		// cau sql ghi vao bang log trong db
-		String sql = "INSERT INTO log(filenamesrc,statusend,typeFile,idconfig)" + "values(?,?,?,?);";
-		File dir = new File("C:\\Users\\Tuong Tu\\Desktop\\local");
-		// tao danh sach cac file vua tai ve
-		File[] file = dir.listFiles();
-		for (int i = 0; i < file.length; i++) {
-			try {
-				// connect voi db
-				pr = conn.prepareCall(sql);
-				if (file[i].getName().toLowerCase().startsWith("sinhvien")) {
-					pr.setInt(4, 1);
-				} else {
-					pr.setInt(4, 1);
-				}
-
-				// ghi vao cot duong dan
-				pr.setString(1, file[i].getAbsolutePath());
-				// ghi vao cot trang thai
-				pr.setString(2, "ER");
-				// loai file
-				if (file[i].getName().substring(file[i].getName().lastIndexOf(".")).equals(".xlsx")) {
-					pr.setString(3, "xlsx");
-				} else if (file[i].getName().substring(file[i].getName().lastIndexOf(".")).equals(".txt")) {
-					pr.setString(3, "txt");
-				} else if (file[i].getName().substring(file[i].getName().lastIndexOf(".")).equals(".csv")) {
-					pr.setString(3, "csv");
-				} else if (file[i].getName().substring(file[i].getName().lastIndexOf(".")).equals(".osheet")) {
-					pr.setString(3, "osheet");
-				} else {
-					pr.setString(3, "kb");
-				}
-
-				rs = pr.executeUpdate();
-
-				// ghi thanh cong thi gan tamp=true
-				tamp = true;
-			} catch (Exception e) {
-				e.printStackTrace();
-				return tamp;
-			}
-		}
-		sendMail = new SendEmail();
-		sendMail.sendFromGMail(USER_NAME, PASSWORD, listEmail, subject, body);
-		return tamp;
-	}
+	
 
 //	private void getFileFromServer() throws SQLException {
 //
@@ -226,6 +177,57 @@ static PreparedStatement pr=null;
 			e.printStackTrace();
 			return tamp;
 		}
+		return tamp;
+	}
+	
+	public static boolean log() {
+		int rs = 0;
+		// tao bien tamp de kiem tra ghi vao db thanh cong hay khong
+		boolean tamp = false;
+		PreparedStatement pr = null;
+		// cau sql ghi vao bang log trong db
+		String sql = "INSERT INTO log(filenamesrc,statusend,typeFile,idconfig)" + "values(?,?,?,?);";
+		File dir = new File("C:\\Users\\Tuong Tu\\Desktop\\local");
+		// tao danh sach cac file vua tai ve
+		File[] file = dir.listFiles();
+		for (int i = 0; i < file.length; i++) {
+			try {
+				// connect voi db
+				pr = conn.prepareCall(sql);
+				if (file[i].getName().toLowerCase().startsWith("sinhvien")) {
+					pr.setInt(4, 1);
+				} else {
+					pr.setInt(4, 1);
+				}
+
+				// ghi vao cot duong dan
+				pr.setString(1, file[i].getAbsolutePath());
+				// ghi vao cot trang thai
+				pr.setString(2, "ER");
+				// loai file
+				if (file[i].getName().substring(file[i].getName().lastIndexOf(".")).equals(".xlsx")) {
+					pr.setString(3, "xlsx");
+				} else if (file[i].getName().substring(file[i].getName().lastIndexOf(".")).equals(".txt")) {
+					pr.setString(3, "txt");
+				} else if (file[i].getName().substring(file[i].getName().lastIndexOf(".")).equals(".csv")) {
+					pr.setString(3, "csv");
+				} else if (file[i].getName().substring(file[i].getName().lastIndexOf(".")).equals(".osheet")) {
+					pr.setString(3, "osheet");
+				} else {
+					pr.setString(3, "kb");
+				}
+
+				rs = pr.executeUpdate();
+
+				// ghi thanh cong thi gan tamp=true
+				tamp = true;
+			} catch (Exception e) {
+				e.printStackTrace();
+				return tamp;
+			}
+		}
+		sendMail = new SendEmail();
+		sendMail.sendFromGMail(USER_NAME, PASSWORD, listEmail, subject, body);
 		return tamp;
 	}
 	
